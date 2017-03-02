@@ -5,32 +5,31 @@ compiler: g++
 env:
     global:
         - secure: "nF/ZZy/mLjtiH1IFaEjdMe5nV0LJTbMezb8SjM/WIaPkqi88JfOhc3putko35TIAbhOu9VT+UgrOTxP3JLdtX0SZPz9Q+ebNWsthLvrQ4JZCWE9iaUcli95lw+0EivV0Swq1MZzrBmJKmbUXqK2+tf+rzTS8al5dG3SAdMv5HWk8R8XYBgFSzIj2o+e130Wrax+brxDfCBxNl4CuAm3lR+ZKLfHuseEJAru5SIRxKV/tIXtrn7c9sD/iSYkBEX/FEikR5Rv9yCp7CuDsEZIznzuR9wSgS9wF7ZyIxn8sQVD2sp+PdfDH7Q7m2DDEzsGwaCnJOHdUNCiRsCd8p2csT+x25Ga4czkDwnZdQ1rIxL2iN7w85mWhzqA23guaZe35NfrGNZJo/qsYMQxaLfEGR8cxpQZ1RSbTEpQ9FNI0r6FKPuIPPOCe/mQMG6p0crWf3/CeKpBw/9SCvzSWLN9PcW5GcsmlVa6CEfkv/kGtEGi+kSJprEulzSt8tjDVbXNDD3mqWG2usufryQoGFDOAvznp+9DXWagiJXHcPuO+QFJYj1cLy1AtYu/MRu4Mcy3zUIfCcyqTidsQYRP8vIfRhD5aeACtvDCa0IdSsdKV1SFQZ5AvmvAP6MNiVWB0345fWgUlkVcErtOdeZF7bK2wg08uP34Aq3st3wjlfqie0ck="
+        - CC=gcc-4.8
+        - CXX=g++-4.8
 
 addons:
     apt:
         sources:
             - ubuntu-toolchain-r-test
         packages:
+            - gcc-4.8
             - g++-4.8
     coverity_scan:
         project:
             name: "taocp/oops"
             description: "Build submitted via Travis CI"
         notification_email: taocp@users.noreply.github.com
-        build_command_prepend: "cov-configure --comptype gcc --compiler g++-4.8 --template;  make clean"
+        build_command_prepend: "make clean"
         build_command: "make -j4"
         branch_pattern: coverity_scan
 
 before_install:
     - ulimit -c unlimited -S
     - ulimit -a
-    - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-4.8 /usr/bin/gcc
-    - sudo unlink /usr/bin/g++ && sudo ln -s /usr/bin/g++-4.8 /usr/bin/g++
     - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 install:
-    - if [ "$CC" = "gcc"  ]; then export CC="gcc-4.8"; fi
-    - if [ "$CXX" = "g++"  ]; then export CXX="g++-4.8"; fi
     - sh build.sh
     - mkdir build
     - cd build
