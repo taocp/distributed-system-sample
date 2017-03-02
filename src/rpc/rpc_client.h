@@ -3,7 +3,6 @@
 
 #include <string>
 
-#include <boost/bind.hpp>
 #include <sofa/pbrpc/pbrpc.h>
 
 #include "common/base/scoped_ptr.h"
@@ -130,7 +129,7 @@ protected:
 
             // async call
             ThreadPool::Task callback =
-                boost::bind(&RpcClient::template UserCallback<Request, Response, Callback>,
+                std::bind(&RpcClient::template UserCallback<Request, Response, Callback>,
                 request, response, closure, true,
                 (int)sofa::pbrpc::RPC_ERROR_RESOLVE_ADDRESS);
             thread_pool->AddTask(callback);
@@ -184,7 +183,7 @@ protected:
 
         // async call
         ThreadPool::Task done =
-            boost::bind(&RpcClient::template UserCallback<Request, Response, Callback>,
+            std::bind(&RpcClient::template UserCallback<Request, Response, Callback>,
             request, response, closure, failed, error);
         thread_pool->AddTask(done);
     }
