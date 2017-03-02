@@ -22,14 +22,14 @@ fi
 
 cd ${DEPS_SOURCE}
 
-if [ ! -f "${FLAG_DIR}/boost_1_58_0"  ] \
-    || [ ! -d "${DEPS_PREFIX}/boost_1_58_0/boost"  ]; then
-    wget --no-check-certificate -O boost_1_58_0.tar.bz2 http://mirrors.163.com/gentoo/distfiles/boost_1_58_0.tar.bz2
-    tar xjf boost_1_58_0.tar.bz2 --recursive-unlink
-    rm -rf ${DEPS_PREFIX}/boost_1_58_0
-    mv boost_1_58_0 ${DEPS_PREFIX}
-    touch "${FLAG_DIR}/boost_1_58_0"
-fi
+#if [ ! -f "${FLAG_DIR}/boost_1_58_0"  ] \
+#    || [ ! -d "${DEPS_PREFIX}/boost_1_58_0/boost"  ]; then
+#    wget --no-check-certificate -O boost_1_58_0.tar.bz2 http://mirrors.163.com/gentoo/distfiles/boost_1_58_0.tar.bz2
+#    tar xjf boost_1_58_0.tar.bz2 --recursive-unlink
+#    rm -rf ${DEPS_PREFIX}/boost_1_58_0
+#    mv boost_1_58_0 ${DEPS_PREFIX}
+#    touch "${FLAG_DIR}/boost_1_58_0"
+#fi
 
 # protobuf
 if [ ! -f "${FLAG_DIR}/protobuf_2_6_1" ] \
@@ -66,19 +66,16 @@ if [ ! -f "${FLAG_DIR}/snappy_1_1_1" ] \
 fi
 
 # sofa-pbrpc
-if [ ! -f "${FLAG_DIR}/sofa-pbrpc_1_1_0" ] \
+if [ ! -f "${FLAG_DIR}/sofa-pbrpc_noboost_v0_0_2" ] \
     || [ ! -f "${DEPS_PREFIX}/lib/libsofa-pbrpc.a" ] \
     || [ ! -d "${DEPS_PREFIX}/include/sofa/pbrpc" ]; then
-    wget --no-check-certificate -O sofa-pbrpc-1.1.0.tar.gz https://github.com/baidu/sofa-pbrpc/archive/v1.1.0.tar.gz
-    tar zxf sofa-pbrpc-1.1.0.tar.gz
-    cd sofa-pbrpc-1.1.0
-    #sed -i '' '/BOOST_HEADER_DIR=/ d' depends.mk # for Mac
+    wget --no-check-certificate -O sofa-pbrpc-noboost-v0.0.2.tar.gz https://github.com/baidu/sofa-pbrpc/archive/noboost-v0.0.2.tar.gz
+    tar zxf sofa-pbrpc-noboost-v0.0.2.tar.gz
+    cd sofa-pbrpc-noboost-v0.0.2
     #sed -i '' '/PROTOBUF_DIR=/ d' depends.mk
     #sed -i '' '/SNAPPY_DIR=/ d' depends.mk
-    sed -i '/BOOST_HEADER_DIR=/ d' depends.mk  # for Linux
     sed -i '/PROTOBUF_DIR=/ d' depends.mk
     sed -i '/SNAPPY_DIR=/ d' depends.mk
-    echo "BOOST_HEADER_DIR=${DEPS_PREFIX}/boost_1_58_0" >> depends.mk
     echo "PROTOBUF_DIR=${DEPS_PREFIX}" >> depends.mk
     echo "SNAPPY_DIR=${DEPS_PREFIX}" >> depends.mk
     echo "PREFIX=${DEPS_PREFIX}" >> depends.mk
@@ -88,7 +85,7 @@ if [ ! -f "${FLAG_DIR}/sofa-pbrpc_1_1_0" ] \
     make -j4
     make install
     cd ..
-    touch "${FLAG_DIR}/sofa-pbrpc_1_1_0"
+    touch "${FLAG_DIR}/sofa-pbrpc_noboost_v0_0_2"
 fi
 
 ## cmake for gflags
@@ -126,4 +123,3 @@ sed -i  "s:^SOFA_PBRPC_DIR=.*:SOFA_PBRPC_DIR=$DEPS_PREFIX:" depends.mk
 sed -i  "s:^PROTOBUF_DIR=.*:PROTOBUF_DIR=$DEPS_PREFIX:" depends.mk
 sed -i  "s:^SNAPPY_DIR=.*:SNAPPY_DIR=$DEPS_PREFIX:" depends.mk
 sed -i  "s:^GFLAGS_DIR=.*:GFLAGS_DIR=$DEPS_PREFIX:" depends.mk
-sed -i  "s:^BOOST_DIR=.*:BOOST_DIR=$DEPS_PREFIX/boost_1_58_0:" depends.mk
