@@ -22,7 +22,7 @@ file(GLOB cli src/client/*.cc)
 include_directories(${ProtobufIncludePath})
 
 add_executable(oopsmaster ${flag} ${common} ${master})
-target_link_libraries(oopsmaster proto ${OOPS_LINK_LIBS} pthread z)
+target_link_libraries(oopsmaster proto ${OOPS_LINK_LIBS} pthread z rt)
 
 add_executable(oopscli ${flag} ${rpc} ${common} ${cli})
-target_link_libraries(oopscli proto ${OOPS_LINK_LIBS} pthread z)
+target_link_libraries(oopscli proto ${OOPS_LINK_LIBS} pthread z rt)
