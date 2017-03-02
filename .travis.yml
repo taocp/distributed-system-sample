@@ -30,6 +30,8 @@ before_install:
     - echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-
 
 install:
+    - if [ "$CC" = "gcc" ]; then export CC="gcc-4.8"; fi
+    - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8"; fi
     - sh build.sh
     - mkdir build
     - cd build
