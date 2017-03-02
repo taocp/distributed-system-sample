@@ -88,16 +88,16 @@ if [ ! -f "${FLAG_DIR}/sofa-pbrpc_noboost_v0_0_2" ] \
     touch "${FLAG_DIR}/sofa-pbrpc_noboost_v0_0_2"
 fi
 
-## cmake for gflags
-#if [ ! -f "${DEPS_PREFIX}/bin/cmake" ] ; then
-#    wget --no-check-certificate -O CMake-3.2.1.tar.gz http://github.com/Kitware/CMake/archive/v3.2.1.tar.gz
-#    tar zxf CMake-3.2.1.tar.gz
-#    cd CMake-3.2.1
-#    ./configure --prefix=${DEPS_PREFIX}
-#    make -j4
-#    make install
-#    cd -
-#fi
+# cmake for gflags
+if [ ! -f "${DEPS_PREFIX}/bin/cmake" ] ; then
+    wget --no-check-certificate -O CMake-3.2.1.tar.gz http://github.com/Kitware/CMake/archive/v3.2.1.tar.gz
+    tar zxf CMake-3.2.1.tar.gz
+    cd CMake-3.2.1
+    ./configure --prefix=${DEPS_PREFIX}
+    make -j4
+    make install
+    cd -
+fi
 
 # gflags
 if [ ! -f "${FLAG_DIR}/gflags_2_1_1" ] \
@@ -111,6 +111,49 @@ if [ ! -f "${FLAG_DIR}/gflags_2_1_1" ] \
     make install
     cd -
     touch "${FLAG_DIR}/gflags_2_1_1"
+fi
+
+if [ ! -f "${FLAG_DIR}/glog_-0_3_3"  ] \
+    || [ ! -f "${DEPS_PREFIX}/lib/libglog.a"  ] \
+    || [ ! -d "${DEPS_PREFIX}/include/glog"  ]; then
+    wget --no-check-certificate -O glog-0.3.3.tar.gz https://github.com/google/glog/archive/v0.3.3.tar.gz
+    tar zxf glog-0.3.3.tar.gz
+    cd glog-0.3.3
+    ./configure ${DEPS_CONFIG} CPPFLAGS=-I${DEPS_PREFIX}/include LDFLAGS=-L${DEPS_PREFIX}/lib
+    make -j3
+    make install
+    cd -
+    touch "${FLAG_DIR}/glog_-0_3_3"
+fi
+
+# libunwind for gperftools
+if [ ! -f "${FLAG_DIR}/libunwind_0_98_5"  ] \
+	|| [ ! -f "${DEPS_PREFIX}/lib/libunwind.a"  ] \
+	|| [ ! -f "${DEPS_PREFIX}/include/libunwind.h"  ]; then
+	wget  --no-check-certificate http://mirrors.163.com/gentoo/distfiles/libunwind-0.98.5.tar.gz
+	tar xzf libunwind-0.98.5.tar.gz
+	cd libunwind-0.98.5
+	./configure ${DEPS_CONFIG}
+	make CFLAGS=-fPIC -j4
+	make CFLAGS=-fPIC install
+	cd -
+	touch "${FLAG_DIR}/libunwind_0_98_5"
+fi
+
+# gperftools (tcmalloc)
+if [ ! -f "${FLAG_DIR}/gperftools_2_2_1"  ] \
+	|| [ ! -f "${DEPS_PREFIX}/lib/libtcmalloc_minimal.a"  ]; then
+	# wget --no-check-certificate https://googledrive.com/host/0B6NtGsLhIcf7MWxMMF9JdTN3UVk/gperftools-2.2.1.tar.gz
+	rm -rf gperftools
+	git clone --depth=1 https://github.com/00k/gperftools
+	mv gperftools/gperftools-2.2.1.tar.gz .
+	tar zxf gperftools-2.2.1.tar.gz
+	cd gperftools-2.2.1
+	./configure ${DEPS_CONFIG} CPPFLAGS=-I${DEPS_PREFIX}/include LDFLAGS=-L${DEPS_PREFIX}/lib
+	make -j4
+	make install
+	cd -
+	touch "${FLAG_DIR}/gperftools_2_2_1"
 fi
 
 cd ${WORK_DIR}

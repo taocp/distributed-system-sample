@@ -7,7 +7,8 @@ include_directories(thirdparty/include thirdparty/boost_1_58_0 . src src/proto)
 set(CMAKE_CXX_FLAGS "-std=c++11 -g")
 #set(CMAKE_CXX_FLAGS "-std=c++11 -fno-use-linker-plugin")
 set(CMAKE_CXX_STANDARD 11)
-set(OOPS_LINK_LIBS libsofa-pbrpc.a libgflags.a libprotobuf.a libsnappy.a)
+set(OOPS_LINK_LIBS libsofa-pbrpc.a libgflags.a libglog.a libprotobuf.a libsnappy.a
+	tcmalloc unwind pthread)
 link_directories(thirdparty/lib/)
 
 # XXX
